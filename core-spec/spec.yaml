@@ -146,9 +146,14 @@ fields:
   # Required: Unique identifier for the field within the logical dataset
   - name: string
 
-    # Required: SQL expression that defines how to compute this field
+    # Required: Expression definition with dialect support
+    # Supports multiple SQL dialects for cross-platform compatibility
+    # Each field can have expressions in different dialects for portability
     # Can be a simple column reference or a complex scalar expression
-    expression: string
+    expression:
+      dialects:
+        - dialect: string  # Must be one of the values from 'dialects' enum above, Default: "ANSI_SQL"
+          expression: string  # SQL scalar expression, e.g., "customer_id", "first_name || ' ' || last_name", "UPPER(email)"
 
     # Optional: Dimension metadata
     # Indicates this field can be used as a dimension for grouping/filtering

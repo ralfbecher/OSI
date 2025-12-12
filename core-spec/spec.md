@@ -196,12 +196,30 @@ Fields represent row-level attributes that can be used for grouping, filtering, 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | Yes | Unique identifier for the field within the dataset |
-| `expression` | string | Yes | SQL expression that defines how to compute this field |
+| `expression` | object | Yes | Expression definition with dialect support |
 | `dimension` | object | No | Dimension metadata (e.g., `is_time` flag) |
 | `label` | string | No | Label for categorization |
 | `description` | string | No | Human-readable description |
 | `ai_context` | string/object | No | Additional context for AI tools (e.g., synonyms) |
 | `custom_extensions` | array | No | Vendor-specific attributes |
+
+### Expression Object
+
+The expression object supports multiple SQL dialects for cross-platform compatibility. Each field can define expressions in different dialects.
+
+**Structure:**
+
+```yaml
+expression:
+  dialects:
+    - dialect: ANSI_SQL  # Must be one of the dialects enum values
+      expression: "customer_id"  # Scalar SQL expression
+```
+
+**Key Points:**
+- Use scalar SQL expressions (no aggregations)
+- Can be simple column references (e.g., `customer_id`) or computed expressions (e.g., `first_name || ' ' || last_name`)
+- Multiple dialect versions can be provided for the same field
 
 ### Dimension Object
 
@@ -215,7 +233,10 @@ Fields represent row-level attributes that can be used for grouping, filtering, 
 
 ```yaml
 - name: customer_id
-  expression: customer_id
+  expression:
+    dialects:
+      - dialect: ANSI_SQL
+        expression: customer_id
   description: Customer identifier
   dimension: 
     is_time: false
@@ -225,7 +246,10 @@ Fields represent row-level attributes that can be used for grouping, filtering, 
 
 ```yaml
 - name: full_name
-  expression: first_name || ' ' || last_name
+  expression:
+    dialects:
+      - dialect: ANSI_SQL
+        expression: first_name || ' ' || last_name
   description: Customer full name
   ai_context:
     synonyms:
@@ -237,7 +261,10 @@ Fields represent row-level attributes that can be used for grouping, filtering, 
 
 ```yaml
 - name: order_date
-  expression: order_date
+  expression:
+    dialects:
+      - dialect: ANSI_SQL
+        expression: order_date
   dimension:
     is_time: true
   description: Date when order was placed
@@ -245,6 +272,19 @@ Fields represent row-level attributes that can be used for grouping, filtering, 
     synonyms:
       - "purchase date"
       - "transaction date"
+```
+
+**Multi-Dialect Field:**
+
+```yaml
+- name: email_normalized
+  expression:
+    dialects:
+      - dialect: ANSI_SQL
+        expression: LOWER(email)
+      - dialect: SNOWFLAKE
+        expression: LOWER(email)::VARCHAR
+  description: Normalized email address
 ```
 
 ---
@@ -291,32 +331,17 @@ expression:
       - "revenue"
 ```
 
-**Complex Calculation:**
-
-```yaml
-- name: average_order_value
-  expression:
-    - dialect: ANSI_SQL
-      expression: SUM(orders.amount) / COUNT(DISTINCT orders.order_id)
-  description: Average value per order
-  ai_context:
-    synonyms:
-      - "AOV"
-      - "avg order size"
-```
-
 **Cross-Dataset Metric:**
 
 ```yaml
-- name: customer_lifetime_value
+- name: avg_orders
   expression:
     - dialect: ANSI_SQL
       expression: SUM(orders.amount) / COUNT(DISTINCT customers.id)
-  description: Average lifetime value per customer
+  description: Average orders
   ai_context:
     synonyms:
-      - "CLV"
-      - "LTV"
+      - "Order Average by customer"
 ```
 
 ---
@@ -391,21 +416,33 @@ semantic_model:
         description: Customer orders
         fields:
           - name: order_id
-            expression: order_id
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: order_id
             description: Order identifier
           
           - name: customer_id
-            expression: customer_id
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: customer_id
             description: Customer identifier
           
           - name: order_date
-            expression: order_date
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: order_date
             dimension:
               is_time: true
             description: Order date
           
           - name: amount
-            expression: amount
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: amount
             description: Order amount
 
       - name: customers
@@ -414,11 +451,17 @@ semantic_model:
         description: Customer information
         fields:
           - name: id
-            expression: id
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: id
             description: Customer identifier
           
           - name: email
-            expression: email
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: email
             description: Customer email
 
     relationships:
@@ -499,6 +542,7 @@ ai_context:
   - Support for datasets, relationships, fields, and metrics
   - Multi-dialect metric expressions
   - Vendor extensibility framework
+  - Context for agents
 
 ---
 
