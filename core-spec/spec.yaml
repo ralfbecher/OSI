@@ -10,17 +10,11 @@
 # Enumerations
 # Standard enums used throughout the specification
 
-# Supported SQL and expression language dialects
+# Supported expression language dialects
 dialects:
   - "ANSI_SQL"              # Standard SQL dialect
-  - "SNOWFLAKE_SQL"         # Snowflake
+  - "SNOWFLAKE"             # Snowflake
   - "MDX"                   # Multi-Dimensional Expressions
-  - "TABLEAU"               # Tableau
-  - "BIGQUERY_SQL"          # Google BigQuery
-  - "REDSHIFT_SQL"          # Amazon Redshift
-  - "DATABRICKS_SQL"        # Databricks
-  - "POSTGRESQL"            # PostgreSQL
-  - "MYSQL"                 # MySQL
 
 
 
@@ -31,17 +25,6 @@ vendors:
   - "SALESFORCE"
   - "DBT"
 
-
-# Standard aggregation types for structured metrics
-aggregation_types:
-  # Basic aggregations
-  - "SUM"
-  - "AVG"
-  - "COUNT"
-  - "COUNT_DISTINCT"
-  - "MIN"
-  - "MAX"
-  
  
 # Top-level semantic model definition
 semantic_model:
@@ -196,17 +179,12 @@ metrics:
   # Required: Unique identifier for the metric within the logical dataset
   - name: string
 
-    # Required: Expression definition with dialect support
+    # Required: Expression definition
     # Supports multiple SQL dialects for cross-platform compatibility
     expression:
+     dialects:
       - dialect: string  # Must be one of the values from 'dialects' enum above, Default: "ANSI_SQL"
-      # Must be one of the following two options
-      # Option 1: Full expression with aggregate function 
         expression: string  # e.g., "SUM(sales)", "AVG(revenue)"
-
-      # Option 2: Structured  
-        aggregation_type: string  # Must be one of the values from 'aggregation_types' enum above
-        input_expr: string  # Must be a scalar expressions e.g., "sales", "revenue", "quantity"
 
     # Optional: Human-readable description of the metric
     # Should explain what the metric measures and how it's used

@@ -46,21 +46,6 @@ Supported vendors for custom extensions and integrations.
 | `SALESFORCE` | Salesforce/Tableau-specific attributes |
 | `DBT` | dbt-specific attributes |
 
-### Aggregation Types
-
-Standard aggregation functions for structured metric definitions.
-
-| Type | Description |
-|------|-------------|
-| `SUM` | Sum aggregation |
-| `AVG` | Average aggregation |
-| `COUNT` | Count aggregation |
-| `COUNT_DISTINCT` | Distinct count aggregation |
-| `MIN` | Minimum value |
-| `MAX` | Maximum value |
-
----
-
 ## Semantic Model
 
 The top-level container that represents a complete semantic model, including datasets, relationships, and  metrics.
@@ -266,7 +251,7 @@ Fields represent row-level attributes that can be used for grouping, filtering, 
 
 ## Metrics
 
-Quantitative measures defined on business data, representing key calculations like sums, averages, ratios, etc. Metrics can be defined at the semantic model level and can  span multiple datasets.
+Quantitative measures defined on business data, representing key calculations like sums, averages, ratios, etc. Metrics are defined at the semantic model level and can  span multiple datasets.
 
 ### Schema
 
