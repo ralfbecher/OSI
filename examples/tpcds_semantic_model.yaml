@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=../core-spec/osi-schema.json
+
 # TPC-DS Semantic Model Example
 # This example demonstrates the OSI Core Metadata Spec using the TPC-DS benchmark schema
 # TPC-DS is a decision support benchmark with a realistic retail business model
@@ -12,9 +14,9 @@ semantic_model:
       # Fact table: Store sales transactions
       - name: store_sales
         source: tpcds.public.store_sales
-        primary_key: [ss_item_sk, ss_ticket_number]  # Composite primary key
+        primary_key: [ss_item_sk, ss_ticket_number] # Composite primary key
         unique_keys:
-          - [ss_item_sk, ss_ticket_number]  # Composite key: item + ticket number uniquely identifies a line item
+          - [ss_item_sk, ss_ticket_number] # Composite key: item + ticket number uniquely identifies a line item
         description: Fact table containing all store sales transactions
         ai_context:
           synonyms:
@@ -123,9 +125,9 @@ semantic_model:
       # Dimension table: Date
       - name: date_dim
         source: tpcds.public.date_dim
-        primary_key: [d_date_sk]  # Simple primary key
+        primary_key: [d_date_sk] # Simple primary key
         unique_keys:
-          - [d_date_sk]  # Simple key: single column
+          - [d_date_sk] # Simple key: single column
         description: Date dimension with calendar attributes
         ai_context:
           synonyms:
@@ -196,9 +198,9 @@ semantic_model:
       # Dimension table: Customer
       - name: customer
         source: tpcds.public.customer
-        primary_key: [c_customer_sk]  # Simple primary key
+        primary_key: [c_customer_sk] # Simple primary key
         unique_keys:
-          - [c_customer_sk]  # Simple key: single column
+          - [c_customer_sk] # Simple key: single column
         description: Customer dimension with demographic information
         ai_context:
           synonyms:
@@ -276,9 +278,9 @@ semantic_model:
       # Dimension table: Item (Product)
       - name: item
         source: tpcds.public.item
-        primary_key: [i_item_sk]  # Simple primary key
+        primary_key: [i_item_sk] # Simple primary key
         unique_keys:
-          - [i_item_sk]  # Simple key: single column
+          - [i_item_sk] # Simple key: single column
         description: Item/Product dimension with product attributes
         ai_context:
           synonyms:
@@ -365,9 +367,9 @@ semantic_model:
       # Dimension table: Store
       - name: store
         source: tpcds.public.store
-        primary_key: [s_store_sk]  # Simple primary key
+        primary_key: [s_store_sk] # Simple primary key
         unique_keys:
-          - [s_store_id]  # Simple key: single column
+          - [s_store_id] # Simple key: single column
         description: Store dimension with location and store attributes
         ai_context:
           synonyms:
@@ -555,19 +557,23 @@ semantic_model:
 
     custom_extensions:
       - vendor_name: SALESFORCE
-        data: '{
-          "tableau_workbook_id": "tpcds_retail_dashboard",
-          "einstein_enabled": true,
-          "crm_sync": {
-            "enabled": true,
-            "sync_frequency": "daily",
-            "customer_mapping": "customer.c_customer_id -> Account.AccountNumber"
-          },
-          "tableau_semantics": {
-            "published": true,
-            "version": "1.0"
+        data: |
+          {
+            "tableau_workbook_id": "tpcds_retail_dashboard",
+            "einstein_enabled": true,
+            "crm_sync": {
+              "enabled": true,
+              "sync_frequency": "daily",
+              "customer_mapping": "customer.c_customer_id -> Account.AccountNumber"
+            },
+            "tableau_semantics": {
+              "published": true,
+              "version": "1.0"
+            }
           }
-        }'
-
       - vendor_name: DBT
-        data: '{"project_name": "tpcds_analytics", "models_path": "models/semantic"}'
+        data: |
+          {
+            "project_name": "tpcds_analytics", 
+            "models_path": "models/semantic"
+          }
